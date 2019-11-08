@@ -1,4 +1,5 @@
 const db = require('../data/db-config.js');
+const mappers = require('./mappers');
 
 module.exports = {
   addResource,
@@ -38,7 +39,7 @@ function findProjectById(project_id) {
   return db('projects').where({ project_id: Number(project_id) });
 }
 function getAllProjects() {
-  return db('projects')
+  return db('projects').then(projects => projects.map(project => mappers.projectToBody(project)))
 }
 function addTask(task) {
   return db('tasks')
@@ -58,6 +59,6 @@ function getAllTasks() {
     'p.project_id',
     'p.project_name',
     'p.project_description',
-  )
+  ).then(tasks => tasks.map(task => mappers.taskToBody(task)))
   
 }
